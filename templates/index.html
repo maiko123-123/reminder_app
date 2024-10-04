@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>リマインダーアプリ</title>
+</head>
+<body>
+    <h1>タスク追加</h1>
+    <form id="taskForm">
+        <input type="text" id="title" placeholder="タスク名" required>
+        <input type="datetime-local" id="due_date" required>
+        <input type="email" id="requester_email" placeholder="依頼者のメール" required>
+        <input type="email" id="assignee_email" placeholder="実行者のメール" required>
+        <button type="submit">タスク追加</button>
+    </form>
+
+    <script>
+        document.getElementById('taskForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const response = await fetch('/add_task', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    title: document.getElementById('title').value,
+                    due_date: document.getElementById('due_date').value,
+                    requester_email: document.getElementById('requester_email').value,
+                    assignee_email: document.getElementById('assignee_email').value
+                })
+            });
+            const result = await response.json();
+            alert(result.message);
+        };
+    </script>
+</body>
+</html>
