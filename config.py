@@ -7,3 +7,4 @@ class Config:
     MAIL_USERNAME = 'your_email@gmail.com'
     MAIL_PASSWORD = 'your_password'
     MAIL_DEFAULT_SENDER = 'your_email@gmail.com'
+

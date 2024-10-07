@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_mail import Mail, Message
 from apscheduler.schedulers.background import BackgroundScheduler
 from config import Config
-from models import db, Task
+from models import db, Task, Comment
 import datetime
 
 app = Flask(__name__)
@@ -38,7 +38,7 @@ def index():
 @app.route('/add_task', methods=['POST'])
 def add_task():
     data = request.get_json()
-    due_date = datetime.datetime.strptime(data['due_date'], '%Y-%m-%dT%H:%M')
+    due_date = datetime.datetime.strptime(data['due_date'], '%Y-%m-%d')
 
     new_task = Task(
         title=data['title'],
@@ -49,7 +49,24 @@ def add_task():
     db.session.add(new_task)
     db.session.commit()
     
-    return jsonify({'message': 'Task added'}), 201
+    return jsonify({'message': 'Task added', 'task_id': new_task.id}), 201
+
+@app.route('/task/<int:task_id>')
+def task_detail(task_id):
+    task = Task.query.get_or_404(task_id)
+    comments = Comment.query.filter_by(task_id=task.id).all()
+    return render_template('task_detail.html', task=task, comments=comments)
+
+@app.route('/add_comment', methods=['POST'])
+def add_comment():
+    data = request.get_json()
+    new_comment = Comment(
+        task_id=data['task_id'],
+        content=data['content']
+    )
+    db.session.add(new_comment)
+    db.session.commit()
+    return jsonify({'message': 'Comment added'}), 201
 
 if __name__ == '__main__':
     app.run(debug=True)
