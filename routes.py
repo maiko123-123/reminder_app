@@ -1,33 +1,23 @@
-from flask import Blueprint, request, jsonify
-from models import db, Task, Comment
-import datetime
+from flask import Blueprint, render_template, request, redirect, url_for, flash
+from models import Task, Comment, db
 
 main = Blueprint('main', __name__)
 
-@main.route('/add_task', methods=['POST'])
-def add_task():
-    data = request.get_json()
-    due_date = datetime.datetime.strptime(data['due_date'], '%Y-%m-%dT%H:%M')
+@main.route('/tasks')
+def task_list():
+    tasks = Task.query.all()
+    return render_template('task_list.html', tasks=tasks)
 
-    new_task = Task(
-        title=data['title'],
-        due_date=due_date,
-        requester_email=data['requester_email'],
-        assignee_email=data['assignee_email']
-    )
-    db.session.add(new_task)
+@main.route('/task/<int:task_id>')
+def task_detail(task_id):
+    task = Task.query.get_or_404(task_id)
+    comments = Comment.query.filter_by(task_id=task_id).all()
+    return render_template('task_detail.html', task=task, comments=comments)
+
+@main.route('/complete_task/<int:task_id>', methods=['POST'])
+def complete_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    db.session.delete(task)  # タスクを削除
     db.session.commit()
-    
-    return jsonify({'message': 'Task added'}), 201
-
-@main.route('/add_comment', methods=['POST'])
-def add_comment():
-    data = request.get_json()
-    new_comment = Comment(
-        task_id=data['task_id'],
-        content=data['content']
-    )
-    db.session.add(new_comment)
-    db.session.commit()
-
-    return jsonify({'message': 'Comment added'}), 201
+    flash('タスクが完了し、削除されました！', 'success')
+    return redirect(url_for('main.task_list'))  # タスク一覧ページにリダイレクト

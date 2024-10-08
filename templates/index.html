@@ -2,36 +2,55 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>リマインダーアプリ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>タスク登録</title>
 </head>
 <body>
-    <h1>タスク追加</h1>
-    <form id="taskForm">
-        <input type="text" id="title" placeholder="タスク名" required>
-        <input type="datetime-local" id="due_date" required>
-        <input type="email" id="requester_email" placeholder="依頼者のメール" required>
-        <input type="email" id="assignee_email" placeholder="実行者のメール" required>
-        <button type="submit">タスク追加</button>
+    <h1>タスク登録フォーム</h1>
+    <form id="taskForm" method="POST" action="/register_task">
+        <label for="taskContent">タスク内容:</label>
+        <textarea id="taskContent" rows="4" required></textarea>
+
+        <label for="username">ユーザー名:</label>
+        <input type="text" id="username" required>
+
+        <label for="dueDate">期日:</label>
+        <input type="datetime-local" id="dueDate" required>
+
+        <label for="remindStartDate">リマインド開始日:</label>
+        <input type="datetime-local" id="remindStartDate" required>
+
+        <label>リマインド間隔:</label>
+        <label><input type="radio" name="remindInterval" value="daily" checked> 毎日</label>
+        <label><input type="radio" name="remindInterval" value="weekly"> 毎週</label>
+
+        <button type="submit">登録</button>
     </form>
 
     <script>
         document.getElementById('taskForm').onsubmit = async function(e) {
             e.preventDefault();
-            const response = await fetch('/add_task', {
+            const response = await fetch('/register_task', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/x-www-form-urlencoded'
                 },
-                body: JSON.stringify({
-                    title: document.getElementById('title').value,
-                    due_date: document.getElementById('due_date').value,
-                    requester_email: document.getElementById('requester_email').value,
-                    assignee_email: document.getElementById('assignee_email').value
+                body: new URLSearchParams({
+                    taskContent: document.getElementById('taskContent').value,
+                    username: document.getElementById('username').value,
+                    dueDate: document.getElementById('dueDate').value,
+                    remindStartDate: document.getElementById('remindStartDate').value,
+                    remindInterval: document.querySelector('input[name="remindInterval"]:checked').value
                 })
             });
-            const result = await response.json();
-            alert(result.message);
+            const result = await response.json(); // レスポンスをJSONとして取得
+            if (result.redirect_url) {  // redirect_urlを確認
+                // 登録成功時に指定されたURLにリダイレクト
+                window.location.href = result.redirect_url; // ここを修正
+            }
+            this.reset(); // フォームをクリア
         };
     </script>
+    
 </body>
 </html>

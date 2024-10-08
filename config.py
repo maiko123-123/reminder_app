@@ -4,6 +4,6 @@ class Config:
     MAIL_SERVER = 'smtp.gmail.com'  # Gmailを使用
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = 'your_email@gmail.com'
-    MAIL_PASSWORD = 'your_password'
-    MAIL_DEFAULT_SENDER = 'your_email@gmail.com'
+    MAIL_USERNAME = 'test@gmail.com'  # 使用するメールアドレス
+    MAIL_PASSWORD = 'test'  # アプリパスワードをここに入れる
+    MAIL_DEFAULT_SENDER = 'test@gmail.com'  # 送信者アドレス
