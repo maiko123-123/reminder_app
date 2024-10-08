@@ -44,11 +44,7 @@ def index():
 def register_task():
     task_content = request.form.get('taskContent')
     username = request.form.get('username')
-<<<<<<< HEAD
-    shared_username = "brackpinkfriday@gmail.com"  # 仮のメールアドレス
-=======
     shared_username = "test@gmail.com"  # 仮のメールアドレス
->>>>>>> 3b780f5d8426fba7337b0a0907236206ace124c9
     due_date = request.form.get('dueDate')
     remind_start_date = request.form.get('remindStartDate')
     remind_interval = request.form.get('remindInterval')
