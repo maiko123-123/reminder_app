@@ -44,7 +44,7 @@ def index():
 def register_task():
     task_content = request.form.get('taskContent')
     username = request.form.get('username')
-    shared_username = "test@gmail.com"  # 仮のメールアドレス
+    shared_username = "brackpinkfriday@gmail.com"  # 仮のメールアドレス
     due_date = request.form.get('dueDate')
     remind_start_date = request.form.get('remindStartDate')
     remind_interval = request.form.get('remindInterval')
@@ -68,8 +68,8 @@ def register_task():
     mail.send(msg)
 
     # タスクリストのURLを返す
-    task_list_url = url_for('main.task_list', _external=True)  # task_listが定義されている関数の名前に合わせてください
-    return jsonify({'redirect_url': task_list_url})  # redirect_urlを返すように修正
+    task_list_url = url_for('main.task_list', _external=True)
+    return jsonify({'redirect_url': task_list_url})
 
 if __name__ == '__main__':
     app.run(debug=True)

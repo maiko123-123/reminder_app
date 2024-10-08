@@ -1,23 +1,27 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
-from models import Task, Comment, db
+from models import db, Task, Comment
 
 main = Blueprint('main', __name__)
 
-@main.route('/tasks')
+@main.route('/task_list')
 def task_list():
-    tasks = Task.query.all()
+    tasks = Task.query.filter_by(is_completed=False).all()  # 未完了のタスクのみを取得
     return render_template('task_list.html', tasks=tasks)
 
-@main.route('/task/<int:task_id>')
+@main.route('/task_detail/<int:task_id>')
 def task_detail(task_id):
-    task = Task.query.get_or_404(task_id)
+    task = Task.query.get(task_id)
     comments = Comment.query.filter_by(task_id=task_id).all()
     return render_template('task_detail.html', task=task, comments=comments)
 
 @main.route('/complete_task/<int:task_id>', methods=['POST'])
 def complete_task(task_id):
-    task = Task.query.get_or_404(task_id)
-    db.session.delete(task)  # タスクを削除
-    db.session.commit()
-    flash('タスクが完了し、削除されました！', 'success')
-    return redirect(url_for('main.task_list'))  # タスク一覧ページにリダイレクト
+    task = Task.query.get(task_id)
+    if task:
+        task.is_completed = True  # 完了フラグを更新
+        db.session.commit()
+        flash('タスクが完了しました。', 'success')
+    else:
+        flash('タスクが見つかりませんでした。', 'error')
+    
+    return redirect(url_for('main.task_list'))

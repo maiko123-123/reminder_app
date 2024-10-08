@@ -43,12 +43,11 @@
                     remindInterval: document.querySelector('input[name="remindInterval"]:checked').value
                 })
             });
-            const result = await response.json(); // レスポンスをJSONとして取得
-            if (result.redirect_url) {  // redirect_urlを確認
-                // 登録成功時に指定されたURLにリダイレクト
-                window.location.href = result.redirect_url; // ここを修正
+            const result = await response.json();
+            if (result.redirect_url) {
+                window.location.href = result.redirect_url;
             }
-            this.reset(); // フォームをクリア
+            this.reset();
         };
     </script>
     
