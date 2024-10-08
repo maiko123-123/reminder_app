@@ -44,7 +44,11 @@ def index():
 def register_task():
     task_content = request.form.get('taskContent')
     username = request.form.get('username')
+<<<<<<< HEAD
     shared_username = "brackpinkfriday@gmail.com"  # 仮のメールアドレス
+=======
+    shared_username = "test@gmail.com"  # 仮のメールアドレス
+>>>>>>> 3b780f5d8426fba7337b0a0907236206ace124c9
     due_date = request.form.get('dueDate')
     remind_start_date = request.form.get('remindStartDate')
     remind_interval = request.form.get('remindInterval')
@@ -62,17 +66,14 @@ def register_task():
     db.session.add(new_task)
     db.session.commit()
 
-    flash('タスクが登録されました！', 'success')
-    
-    # タスク詳細ページのURLを生成
-    task_detail_url = url_for('main.task_detail', task_id=new_task.id, _external=True)
-
     # メール通知を送信
     msg = Message("New Task Created", recipients=[shared_username])
-    msg.body = f'Task "{task_content}" has been created.\n\nYou can view it here: {task_detail_url}'
+    msg.body = f'Task "{task_content}" has been created.'
     mail.send(msg)
 
-    return jsonify({'message': 'タスクが登録されました！', 'task_id': new_task.id})
+    # タスクリストのURLを返す
+    task_list_url = url_for('main.task_list', _external=True)  # task_listが定義されている関数の名前に合わせてください
+    return jsonify({'redirect_url': task_list_url})  # redirect_urlを返すように修正
 
 if __name__ == '__main__':
     app.run(debug=True)
