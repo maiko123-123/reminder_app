@@ -9,7 +9,7 @@ from routes import main as main_routes
 app = Flask(__name__)
 app.config.from_object(Config)
 
-app.secret_key = '自分で好きなsecretkeyを設定してください。なんでもおっけいです'
+app.secret_key = 'a_random_string_12345!@#'
 
 db.init_app(app)
 mail = Mail(app)
@@ -44,7 +44,7 @@ def index():
 def register_task():
     task_content = request.form.get('taskContent')
     username = request.form.get('username')
-    shared_username = "自分のメールアドレスをいれてください"  # 仮のメールアドレス
+    shared_username = "brackpinkfriday@gmail.com"  # 仮のメールアドレス
     due_date = request.form.get('dueDate')
     remind_start_date = request.form.get('remindStartDate')
     remind_interval = request.form.get('remindInterval')
