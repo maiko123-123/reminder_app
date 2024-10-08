@@ -44,12 +44,13 @@
                 })
             });
             const result = await response.json(); // レスポンスをJSONとして取得
-            alert(result.message); // メッセージを表示
-            if (result.task_id) {
-                window.location.href = `/task/${result.task_id}`; // タスク詳細ページにリダイレクト
+            if (result.redirect_url) {  // redirect_urlを確認
+                // 登録成功時に指定されたURLにリダイレクト
+                window.location.href = result.redirect_url; // ここを修正
             }
             this.reset(); // フォームをクリア
         };
     </script>
+    
 </body>
 </html>
