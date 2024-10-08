@@ -7,3 +7,4 @@ class Config:
     MAIL_USERNAME = 'test@gmail.com'  # 使用するメールアドレス
     MAIL_PASSWORD = 'test'  # アプリパスワードをここに入れる
     MAIL_DEFAULT_SENDER = 'test@gmail.com'  # 送信者アドレス
+

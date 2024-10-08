@@ -9,7 +9,7 @@ from routes import main as main_routes
 app = Flask(__name__)
 app.config.from_object(Config)
 
-app.secret_key = '自分で好きなsecretkeyを設定してください。なんでもおっけいです'
+app.secret_key = 'a_random_string_12345!@#'
 
 db.init_app(app)
 mail = Mail(app)
