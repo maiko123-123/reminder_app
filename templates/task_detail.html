@@ -2,44 +2,30 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>タスク詳細</title>
 </head>
 <body>
     <h1>タスク詳細</h1>
-    <p><strong>タスク内容:</strong> {{ task.title }}</p>
-    <p><strong>依頼者:</strong> {{ task.requester_email }}</p>
-    <p><strong>期日:</strong> {{ task.due_date }}</p>
     
-    <h2>コメント一覧</h2>
-    <ul id="commentList">
+    <h2>{{ task.title }}</h2>
+    <p><strong>リクエスター:</strong> {{ task.requester_email }}</p>
+    <p><strong>担当者:</strong> {{ task.assignee_email }}</p>
+    <p><strong>期日:</strong> {{ task.due_date }}</p>
+    <p><strong>リマインド開始日:</strong> {{ task.remind_start_date }}</p>
+    <p><strong>リマインド間隔:</strong> {{ task.remind_interval }}</p>
+    
+    <h3>コメント</h3>
+    <ul>
         {% for comment in comments %}
             <li>{{ comment.content }}</li>
         {% endfor %}
     </ul>
     
-    <h3>コメント追加</h3>
-    <form id="commentForm">
-        <textarea id="commentContent" required></textarea>
-        <button type="submit">追加</button>
+    <form action="{{ url_for('main.complete_task', task_id=task.id) }}" method="POST">
+        <button type="submit">タスクを完了にする</button>
     </form>
-
-    <script>
-        document.getElementById('commentForm').onsubmit = async function(e) {
-            e.preventDefault();
-            const response = await fetch('/add_comment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    task_id: {{ task.id }},
-                    content: document.getElementById('commentContent').value
-                })
-            });
-            const result = await response.json();
-            alert(result.message);
-            location.reload(); // コメント追加後にページをリロード
-        };
-    </script>
+    
+    <a href="{{ url_for('main.task_list') }}">タスク一覧に戻る</a>
 </body>
 </html>
