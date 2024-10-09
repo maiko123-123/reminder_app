@@ -1,9 +1,8 @@
-# app.py
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_mail import Mail, Message
 from apscheduler.schedulers.background import BackgroundScheduler
 from config import Config
-from models import db, Task, User, Team, Comment  # User と Team をインポート
+from models import db, Task, User, Team, Comment
 import datetime
 from routes import main as main_routes
 from flask_migrate import Migrate
@@ -26,9 +25,7 @@ def send_reminder_email(task):
     mail.send(msg)
 
 def get_reminder_recipients(task):
-    # 実行者のメールアドレス
     recipients = [task.assignee.email]
-    # 実行者のチームメンバーのメールアドレス（実行者自身を除く）
     team_members = User.query.filter(User.team_id == task.assignee.team_id, User.id != task.assignee.id).all()
     recipients += [member.email for member in team_members]
     return recipients
@@ -52,7 +49,7 @@ app.register_blueprint(main_routes)
 @app.route('/')
 def index():
     users = User.query.all()
-    return render_template('index.html', users=users)  # ユーザーリストをテンプレートに渡す
+    return render_template('index.html', users=users)
 
 @app.route('/register_task', methods=['POST'])
 def register_task():
@@ -82,13 +79,11 @@ def register_task():
     db.session.add(new_task)
     db.session.commit()
 
-    # 実行者とそのチームメンバーにメール通知を送信
     recipients = get_reminder_recipients(new_task)
     msg = Message("New Task Created", recipients=recipients)
     msg.body = f'Task "{task_content}" has been created and assigned to you.'
     mail.send(msg)
 
-    # タスクリストのURLを返す
     task_list_url = url_for('main.task_list', _external=True)
     return jsonify({'redirect_url': task_list_url})
 

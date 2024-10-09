@@ -32,6 +32,7 @@
             <tr>
                 <th>タスク名</th>
                 <th>期日</th>
+                <th>依頼者</th>  <!-- 依頼者の列 -->
                 <th>ステータス</th>
             </tr>
         </thead>
@@ -41,11 +42,22 @@
                     <td>
                         <a href="{{ url_for('main.task_detail', task_id=task.id) }}">{{ task.title }}</a>
                     </td>
-                    <td>{{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</td>
-                    <td>{{ '完了' if task.is_completed else '未完了' }}</td>
+                    <td>{{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</td>  <!-- 期日の表示 -->
+                    <td>{{ task.requester.username }}</td>  <!-- 依頼者の表示 -->
+                    <td>
+                        {% if task.is_completed %}
+                            完了
+                        {% else %}
+                            未完了
+                        {% endif %}
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
+    
+    <div>
+        <a href="{{ url_for('index') }}">タスクを追加</a>  <!-- タスク追加へのリンク -->
+    </div>
 </body>
 </html>

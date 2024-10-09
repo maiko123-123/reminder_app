@@ -9,23 +9,31 @@
     <h1>タスク詳細</h1>
     
     <h2>{{ task.title }}</h2>
-    <p><strong>リクエスター:</strong> {{ task.requester_email }}</p>
-    <p><strong>担当者:</strong> {{ task.assignee_email }}</p>
-    <p><strong>期日:</strong> {{ task.due_date }}</p>
-    <p><strong>リマインド開始日:</strong> {{ task.remind_start_date }}</p>
+    <p><strong>依頼者:</strong> {{ task.requester.username }}</p>  <!-- 依頼者の表示 -->
+    <p><strong>担当者:</strong> {{ task.assignee.username }}</p>  <!-- 担当者の表示 -->
+    <p><strong>期日:</strong> {{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</p>
+    <p><strong>リマインド開始日:</strong> {{ task.remind_start_date.strftime('%Y-%m-%d %H:%M') }}</p>
     <p><strong>リマインド間隔:</strong> {{ task.remind_interval }}</p>
     
     <h3>コメント</h3>
     <ul>
         {% for comment in comments %}
-            <li>{{ comment.content }}</li>
+            <li><strong>{{ comment.user.username }}:</strong> {{ comment.content }}</li>  <!-- ユーザー名を表示 -->
         {% endfor %}
     </ul>
     
     <form action="{{ url_for('main.add_comment', task_id=task.id) }}" method="POST">
+        <input type="text" name="username" placeholder="あなたの名前" required>  <!-- 名前の入力フィールド -->
         <input type="text" name="comment" placeholder="コメントを入力する" required>
         <button type="submit">コメントを追加</button>
     </form>
     
     <form action="{{ url_for('main.complete_task', task_id=task.id) }}" method="POST">
-   
+        <button type="submit">タスクを完了にする</button>
+    </form>
+
+    <div>
+        <a href="{{ url_for('main.task_list') }}">タスク一覧に戻る</a>  <!-- タスク一覧へのリンク -->
+    </div>
+</body>
+</html>
