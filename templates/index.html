@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -11,8 +12,19 @@
         <label for="taskContent">タスク内容:</label>
         <textarea id="taskContent" name="taskContent" rows="4" required></textarea>
 
-        <label for="username">ユーザー名:</label>
-        <input type="text" id="username" name="username" required>
+        <label for="requester">依頼者:</label>
+        <select id="requester" name="requester_id" required>
+            {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="assignee">実行者:</label>
+        <select id="assignee" name="assignee_id" required>
+            {% for user in users %}
+                <option value="{{ user.id }}">{{ user.username }}</option>
+            {% endfor %}
+        </select>
 
         <label for="dueDate">期日:</label>
         <input type="datetime-local" id="dueDate" name="dueDate" required>
@@ -37,7 +49,8 @@
                 },
                 body: new URLSearchParams({
                     taskContent: document.getElementById('taskContent').value,
-                    username: document.getElementById('username').value,
+                    requester_id: document.getElementById('requester').value,
+                    assignee_id: document.getElementById('assignee').value,
                     dueDate: document.getElementById('dueDate').value,
                     remindStartDate: document.getElementById('remindStartDate').value,
                     remindInterval: document.querySelector('input[name="remindInterval"]:checked').value
