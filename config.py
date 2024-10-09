@@ -4,8 +4,8 @@ class Config:
     MAIL_SERVER = 'smtp.gmail.com'  # Gmailを使用
     MAIL_PORT = 587
     MAIL_USE_TLS = True
-    MAIL_USERNAME = 'brackpinkfriday@gmail.com'  # 使用するメールアドレス
-    MAIL_PASSWORD = 'mldi imdw ebci iwjg'  # アプリパスワードをここに入れる
-    MAIL_DEFAULT_SENDER = 'brackpinkfriday@gmail.com'  # 送信者アドレス
+    MAIL_USERNAME = '@gmail.com'  # 使用するメールアドレス
+    MAIL_PASSWORD = ''  # アプリパスワードをここに入れる
+    MAIL_DEFAULT_SENDER = '@gmail.com'  # 送信者アドレス
 
 

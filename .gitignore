@@ -1,2 +1,7 @@
 seed.py
 tasks__.db
+tasks_.db
+tasks_pull.db
+*.pyc
+__pycache__/
+

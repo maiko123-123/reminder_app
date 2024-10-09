@@ -14,6 +14,15 @@ def task_detail(task_id):
     comments = Comment.query.filter_by(task_id=task_id).all()
     return render_template('task_detail.html', task=task, comments=comments)
 
+@main.route('/add_comment/<int:task_id>', methods=['POST'])
+def add_comment(task_id):
+    content = request.form.get('comment')
+    if content:
+        new_comment = Comment(task_id=task_id, content=content)
+        db.session.add(new_comment)
+        db.session.commit()
+    return redirect(url_for('main.task_detail', task_id=task_id))
+
 @main.route('/complete_task/<int:task_id>', methods=['POST'])
 def complete_task(task_id):
     task = Task.query.get(task_id)
