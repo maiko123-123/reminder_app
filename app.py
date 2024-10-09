@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, jso
 from flask_mail import Mail, Message
 from apscheduler.schedulers.background import BackgroundScheduler
 from config import Config
-from models import db, Task
+from models import db, Task, Comment
 import datetime
 from routes import main as main_routes
 
