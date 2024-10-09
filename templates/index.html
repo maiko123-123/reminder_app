@@ -32,9 +32,13 @@
         <label for="remindStartDate">リマインド開始日:</label>
         <input type="datetime-local" id="remindStartDate" name="remindStartDate" required>
 
-        <label>リマインド間隔:</label>
-        <label><input type="radio" name="remindInterval" value="daily" checked> 毎日</label>
-        <label><input type="radio" name="remindInterval" value="weekly"> 毎週</label>
+        <label for="remindInterval">リマインド間隔:</label>
+        <select id="remindInterval" name="remindInterval" required>
+            <option value="1_minute">1分</option>
+            <option value="daily" selected>毎日</option>
+            <option value="every_three_days">3日</option>
+            <option value="weekly">毎週</option>
+        </select>
 
         <button type="submit">登録</button>
     </form>
@@ -53,7 +57,7 @@
                     assignee_id: document.getElementById('assignee').value,
                     dueDate: document.getElementById('dueDate').value,
                     remindStartDate: document.getElementById('remindStartDate').value,
-                    remindInterval: document.querySelector('input[name="remindInterval"]:checked').value
+                    remindInterval: document.getElementById('remindInterval').value // 修正した部分
                 })
             });
             const result = await response.json();
