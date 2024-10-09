@@ -4,4 +4,4 @@ tasks_.db
 tasks_pull.db
 *.pyc
 __pycache__/
-
+venv/

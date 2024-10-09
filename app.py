@@ -6,6 +6,10 @@ from models import db, Task, User, Team, Comment
 import datetime
 from routes import main as main_routes
 from flask_migrate import Migrate
+from datetime import timedelta
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -16,13 +20,19 @@ db.init_app(app)
 migrate = Migrate(app, db)
 mail = Mail(app)
 
+# スケジューラの初期化
 scheduler = BackgroundScheduler()
 
 def send_reminder_email(task):
-    recipients = get_reminder_recipients(task)
-    msg = Message("Task Reminder", recipients=recipients)
-    msg.body = f"Reminder: Your task '{task.title}' is due on {task.due_date}."
-    mail.send(msg)
+    with app.app_context():
+        try:
+            recipients = get_reminder_recipients(task)
+            msg = Message("Task Reminder", recipients=recipients)
+            msg.body = f"Reminder: Your task '{task.title}' is due on {task.due_date}."
+            mail.send(msg)
+            logging.info(f"Email sent to: {recipients}")  # ここにログを追加
+        except Exception as e:
+            logging.error(f"Error sending email: {e}")  # エラーの詳細をログに記録
 
 def get_reminder_recipients(task):
     recipients = [task.assignee.email]
@@ -33,15 +43,35 @@ def get_reminder_recipients(task):
 def check_due_tasks():
     with app.app_context():
         now = datetime.datetime.now()
-        tasks = Task.query.filter(Task.due_date <= now, Task.is_completed == False).all()
+        # タスクのリストを取得する条件を変更
+        tasks = Task.query.filter(Task.is_completed == False).all()
+        logging.info(f"Checking due tasks at {now}. Found tasks: {[task.title for task in tasks]}")  # ログ追加
         for task in tasks:
-            send_reminder_email(task)
+            # タスクが期日を過ぎている場合、またはリマインド開始日時を過ぎている場合に通知を送る
+            if task.due_date <= now or task.remind_start_date <= now:
+                send_reminder_email(task)
+            
+def schedule_reminder(task):
+    # 次回のリマインド時間を計算
+    if task.remind_interval == '1_minute':
+        next_remind_time = datetime.datetime.now() + timedelta(minutes=1)
+    elif task.remind_interval == 'daily':
+        next_remind_time = datetime.datetime.now() + timedelta(days=1)
+    elif task.remind_interval == 'every_three_days':
+        next_remind_time = datetime.datetime.now() + timedelta(days=3)
+    elif task.remind_interval == 'weekly':
+        next_remind_time = datetime.datetime.now() + timedelta(weeks=1)
 
-scheduler.add_job(check_due_tasks, 'interval', minutes=1)
-scheduler.start()
+    # アプリケーションコンテキストを使用してジョブを追加
+    with app.app_context():
+        scheduler.add_job(send_reminder_email, 'date', run_date=next_remind_time, args=[task])
 
 with app.app_context():
     db.create_all()
+    # スケジューラにジョブを追加
+    scheduler.add_job(check_due_tasks, 'interval', minutes=1)
+    scheduler.start()
+    logging.info("Scheduler started.")
 
 # Blueprintの登録
 app.register_blueprint(main_routes)
@@ -51,6 +81,7 @@ def index():
     users = User.query.all()
     return render_template('index.html', users=users)
 
+# タスクを登録する際の処理を維持します
 @app.route('/register_task', methods=['POST'])
 def register_task():
     task_content = request.form.get('taskContent')
@@ -79,6 +110,7 @@ def register_task():
     db.session.add(new_task)
     db.session.commit()
 
+<<<<<<< HEAD
     recipients = get_reminder_recipients(new_task)
     msg = Message("New Task Created", recipients=recipients)
     msg.body = f'Task "{task_content}" has been created and assigned to you.'
@@ -87,5 +119,13 @@ def register_task():
     task_list_url = url_for('main.task_list', _external=True)
     return jsonify({'redirect_url': task_list_url})
 
+=======
+    # リマインドスケジュールを設定
+    schedule_reminder(new_task)
+    # ここでも次回のリマインドをスケジュール
+    if new_task.remind_start_date <= datetime.datetime.now():
+        schedule_reminder(new_task)
+        
+>>>>>>> 40a78bb175ed4c71978e847fc14fcc8e67be2478
 if __name__ == '__main__':
     app.run(debug=True)
