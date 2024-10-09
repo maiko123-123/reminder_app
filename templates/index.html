@@ -1,4 +1,3 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -60,10 +59,15 @@
                     remindInterval: document.getElementById('remindInterval').value // 修正した部分
                 })
             });
+            
             const result = await response.json();
-            if (result.redirect_url) {
-                window.location.href = result.redirect_url;
+            
+            if (response.ok) { // レスポンスが成功した場合
+                window.location.href = result.redirect_url; // リダイレクト
+            } else {
+                alert(result.error || 'タスクの登録に失敗しました。'); // エラーメッセージ表示
             }
+            
             this.reset();
         };
     </script>

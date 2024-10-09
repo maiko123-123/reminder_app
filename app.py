@@ -1,4 +1,3 @@
-# app.py
 from flask import Flask, render_template, request, redirect, url_for, flash, jsonify
 from flask_mail import Mail, Message
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -111,11 +110,22 @@ def register_task():
     db.session.add(new_task)
     db.session.commit()
 
+<<<<<<< HEAD
+    recipients = get_reminder_recipients(new_task)
+    msg = Message("New Task Created", recipients=recipients)
+    msg.body = f'Task "{task_content}" has been created and assigned to you.'
+    mail.send(msg)
+
+    task_list_url = url_for('main.task_list', _external=True)
+    return jsonify({'redirect_url': task_list_url})
+
+=======
     # リマインドスケジュールを設定
     schedule_reminder(new_task)
     # ここでも次回のリマインドをスケジュール
     if new_task.remind_start_date <= datetime.datetime.now():
         schedule_reminder(new_task)
         
+>>>>>>> 40a78bb175ed4c71978e847fc14fcc8e67be2478
 if __name__ == '__main__':
     app.run(debug=True)

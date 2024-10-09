@@ -1,4 +1,3 @@
-# models.py
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
@@ -20,8 +19,8 @@ class Task(db.Model):
     requester_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     assignee_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     remind_start_date = db.Column(db.DateTime, nullable=False)
-    remind_interval = db.Column(db.String(10), nullable=False)  # "daily" or "weekly"
-    is_completed = db.Column(db.Boolean, default=False)  # タスクのステータス
+    remind_interval = db.Column(db.String(10), nullable=False)
+    is_completed = db.Column(db.Boolean, default=False)
 
     requester = db.relationship('User', foreign_keys=[requester_id], backref='requested_tasks')
     assignee = db.relationship('User', foreign_keys=[assignee_id], backref='assigned_tasks')
@@ -29,4 +28,7 @@ class Task(db.Model):
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # 追加
     content = db.Column(db.String(500), nullable=False)
+
+    user = db.relationship('User', backref='comments')  # ユーザーとのリレーションを追加
