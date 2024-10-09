@@ -9,16 +9,16 @@
     <h1>タスク登録フォーム</h1>
     <form id="taskForm" method="POST" action="/register_task">
         <label for="taskContent">タスク内容:</label>
-        <textarea id="taskContent" rows="4" required></textarea>
+        <textarea id="taskContent" name="taskContent" rows="4" required></textarea>
 
         <label for="username">ユーザー名:</label>
-        <input type="text" id="username" required>
+        <input type="text" id="username" name="username" required>
 
         <label for="dueDate">期日:</label>
-        <input type="datetime-local" id="dueDate" required>
+        <input type="datetime-local" id="dueDate" name="dueDate" required>
 
         <label for="remindStartDate">リマインド開始日:</label>
-        <input type="datetime-local" id="remindStartDate" required>
+        <input type="datetime-local" id="remindStartDate" name="remindStartDate" required>
 
         <label>リマインド間隔:</label>
         <label><input type="radio" name="remindInterval" value="daily" checked> 毎日</label>
@@ -50,6 +50,5 @@
             this.reset();
         };
     </script>
-    
 </body>
 </html>
