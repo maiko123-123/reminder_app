@@ -1,7 +1,13 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
 from models import db, Task, Comment, User
+import datetime
 
 main = Blueprint('main', __name__)
+
+@main.route('/')
+def index():
+    users = User.query.all()  # ユーザー一覧を取得
+    return render_template('index.html', users=users)
 
 @main.route('/task_list')
 def task_list():
@@ -17,21 +23,14 @@ def task_detail(task_id):
 @main.route('/add_comment/<int:task_id>', methods=['POST'])
 def add_comment(task_id):
     content = request.form.get('comment')
-    username = request.form.get('username')  # 名前を取得
+    username = request.form.get('username')
 
-    user = User.query.filter_by(username=username).first()  # ユーザーを検索
-
-    # デバッグ用の print 文
-    print(f"Received comment: '{content}' from user: '{username}'")  # デバッグ用
+    user = User.query.filter_by(username=username).first()
 
     if content and user:
-        new_comment = Comment(task_id=task_id, user_id=user.id, content=content)  # user_idを追加
+        new_comment = Comment(task_id=task_id, user_id=user.id, content=content)
         db.session.add(new_comment)
         db.session.commit()
-        print(f"Comment added successfully!")  # 成功メッセージ
-    else:
-        print("Failed to add comment: Content or user not found.")  # エラーメッセージ
-    
     return redirect(url_for('main.task_detail', task_id=task_id))
 
 @main.route('/complete_task/<int:task_id>', methods=['POST'])
@@ -45,3 +44,27 @@ def complete_task(task_id):
         flash('タスクが見つかりませんでした。', 'error')
     
     return redirect(url_for('main.task_list'))
+
+@main.route('/register_task', methods=['POST'])
+def register_task():
+    title = request.form.get('taskContent')
+    requester_id = request.form.get('requester_id')
+    assignee_id = request.form.get('assignee_id')
+    due_date = request.form.get('dueDate')
+    remind_start_date = request.form.get('remindStartDate')
+    remind_interval = request.form.get('remindInterval')
+
+    new_task = Task(
+        title=title,
+        requester_id=requester_id,
+        assignee_id=assignee_id,
+        due_date=datetime.datetime.strptime(due_date, '%Y-%m-%dT%H:%M'),
+        remind_start_date=datetime.datetime.strptime(remind_start_date, '%Y-%m-%dT%H:%M'),
+        remind_interval=remind_interval,
+        is_completed=False
+    )
+    
+    db.session.add(new_task)
+    db.session.commit()
+
+    return redirect(url_for('main.task_list'))  # リダイレクトを追加
