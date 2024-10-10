@@ -31,17 +31,23 @@
 
         <div class="row-flex">
             <div class="col-half">
-                <p><strong>担当者:</strong> {{ task.assignee.username }}</p>
+                <p><strong>依頼者:</strong> {{ requester.username }}</p>
             </div>
             <div class="col-half">
-                <p><strong>期日:</strong> {{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</p>
+                <p><strong>担当者:</strong> {{ task.assignee.username }}</p>
             </div>
         </div>
 
         <div class="row-flex">
             <div class="col-half">
+                <p><strong>期日:</strong> {{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</p>
+            </div>
+            <div class="col-half">
                 <p><strong>リマインド開始日:</strong> {{ task.remind_start_date.strftime('%Y-%m-%d %H:%M') }}</p>
             </div>
+        </div>
+
+        <div class="row-flex">
             <div class="col-half">
                 <p><strong>リマインド間隔:</strong> {{ task.remind_interval }}</p>
             </div>
