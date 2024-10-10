@@ -1,0 +1,17 @@
+<!-- templates/emails/task_completed.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>タスクが完了しました</title>
+</head>
+<body>
+    <p>こんにちは！</p>
+    <p> <strong>{{ task.requester.username }}</strong>さんが依頼した</p>
+    <p> <strong>{{ task.assignee.username }}</strong>さんの</p>
+    <p>タスク <strong>{{ task.title }}</strong> が完了しました！</p>
+    <p><strong>完了日:</strong> {{ completed_at.strftime('%Y-%m-%d %H:%M') }}</p>
+    <p><a href="{{ task_url }}">タスク詳細を見る</a></p>
+    <p>お疲れ様でした～！</p>
+</body>
+</html>

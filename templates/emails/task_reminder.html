@@ -1,0 +1,15 @@
+<!-- templates/emails/task_reminder.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>タスクのリマインダー</title>
+</head>
+<body>
+    <p>こんにちは！</p>
+    <p>タスク <strong>{{ task.title }}</strong> の期限は <strong>{{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</strong> です。</p>
+    <p><a href="{{ task_url }}">タスク詳細を見る</a></p>
+    <p>忘れずに完了させてください。</p>
+    <p>よろしくお願いします！</p>
+</body>
+</html>

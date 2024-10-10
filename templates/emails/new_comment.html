@@ -1,0 +1,17 @@
+<!-- templates/emails/new_comment.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>新しいコメントが追加されました</title>
+</head>
+<body>
+    <p>こんにちは！</p>
+    <p><strong>{{ commenter.username }}</strong> さんがタスク <strong>{{ task.title }}</strong> にコメントを追加しました。</p>
+    <p><strong>コメント内容:</strong></p>
+    <blockquote>{{ comment.content }}</blockquote>
+    <p><a href="{{ task_url }}">タスク詳細を見る</a></p>
+    <p>ご確認ください。</p>
+    <p>よろしくお願いします！</p>
+</body>
+</html>
