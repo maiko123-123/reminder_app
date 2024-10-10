@@ -4,36 +4,38 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>タスク詳細</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>タスク詳細</h1>
-    
-    <h2>{{ task.title }}</h2>
-    <p><strong>依頼者:</strong> {{ task.requester.username }}</p>  <!-- 依頼者の表示 -->
-    <p><strong>担当者:</strong> {{ task.assignee.username }}</p>  <!-- 担当者の表示 -->
-    <p><strong>期日:</strong> {{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</p>
-    <p><strong>リマインド開始日:</strong> {{ task.remind_start_date.strftime('%Y-%m-%d %H:%M') }}</p>
-    <p><strong>リマインド間隔:</strong> {{ task.remind_interval }}</p>
-    
-    <h3>コメント</h3>
-    <ul>
-        {% for comment in comments %}
-            <li><strong>{{ comment.user.username }}:</strong> {{ comment.content }}</li>  <!-- ユーザー名を表示 -->
-        {% endfor %}
-    </ul>
-    
-    <form action="{{ url_for('main.add_comment', task_id=task.id) }}" method="POST">
-        <input type="text" name="username" placeholder="あなたの名前" required>  <!-- 名前の入力フィールド -->
-        <input type="text" name="comment" placeholder="コメントを入力する" required>
-        <button type="submit">コメントを追加</button>
-    </form>
-    
-    <form action="{{ url_for('main.complete_task', task_id=task.id) }}" method="POST">
-        <button type="submit">タスクを完了にする</button>
-    </form>
+    <div class="container mt-5">
+        <h1 class="mb-4">タスク詳細</h1>
+        <h2>{{ task.title }}</h2>
+        <p><strong>依頼者:</strong> {{ task.requester.username }}</p>
+        <p><strong>担当者:</strong> {{ task.assignee.username }}</p>
+        <p><strong>期日:</strong> {{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</p>
+        <p><strong>リマインド開始日:</strong> {{ task.remind_start_date.strftime('%Y-%m-%d %H:%M') }}</p>
+        <p><strong>リマインド間隔:</strong> {{ task.remind_interval }}</p>
+        
+        <h3>コメント</h3>
+        <ul>
+            {% for comment in comments %}
+                <li><strong>{{ comment.user.username }}:</strong> {{ comment.content }}</li>
+            {% endfor %}
+        </ul>
+        
+        <form action="{{ url_for('main.add_comment', task_id=task.id) }}" method="POST">
+            <input type="text" name="username" placeholder="あなたの名前" required>
+            <input type="text" name="comment" placeholder="コメントを入力する" required>
+            <button type="submit" class="btn btn-secondary">コメントを追加</button>
+        </form>
+        
+        <form action="{{ url_for('main.complete_task', task_id=task.id) }}" method="POST">
+            <button type="submit" class="btn btn-success">タスクを完了にする</button>
+        </form>
 
-    <div>
-        <a href="{{ url_for('main.task_list') }}">タスク一覧に戻る</a>  <!-- タスク一覧へのリンク -->
+        <div>
+            <a href="{{ url_for('main.task_list') }}" class="btn btn-info">タスク一覧に戻る</a>
+        </div>
     </div>
 </body>
 </html>
