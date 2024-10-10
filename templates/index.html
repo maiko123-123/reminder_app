@@ -5,49 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>タスク登録</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .form-section {
+            margin-bottom: 20px; /* 各セクションの間にスペース */
+        }
+        .submit-button {
+            display: flex;
+            justify-content: center; /* ボタンを中央に配置 */
+            margin-top: 20px;
+        }
+        .row-flex {
+            display: flex;
+            justify-content: space-between; /* 要素間のスペースを均等に */
+        }
+        .col-half {
+            flex: 1; /* 各カラムを均等にする */
+            margin-right: 10px; /* 右側のマージン */
+        }
+        .col-half:last-child {
+            margin-right: 0; /* 最後のカラムにはマージンを付けない */
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">タスク登録フォーム</h1>
         <form id="taskForm" method="POST" action="{{ url_for('main.register_task') }}">
-            <div class="form-group">
+            <div class="form-section">
                 <label for="taskContent">タスク内容:</label>
                 <textarea id="taskContent" name="taskContent" class="form-control" rows="4" required></textarea>
             </div>
-            <div class="form-group">
-                <label for="requester">依頼者:</label>
-                <select id="requester" name="requester_id" class="form-control" required>
-                    {% for user in users %}
-                        <option value="{{ user.id }}">{{ user.username }}</option>
-                    {% endfor %}
-                </select>
+            <div class="form-section row-flex">
+                <div class="col-half">
+                    <label for="requester">依頼者:</label>
+                    <select id="requester" name="requester_id" class="form-control" required>
+                        {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-half">
+                    <label for="assignee">実行者:</label>
+                    <select id="assignee" name="assignee_id" class="form-control" required>
+                        {% for user in users %}
+                            <option value="{{ user.id }}">{{ user.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="assignee">実行者:</label>
-                <select id="assignee" name="assignee_id" class="form-control" required>
-                    {% for user in users %}
-                        <option value="{{ user.id }}">{{ user.username }}</option>
-                    {% endfor %}
-                </select>
+            <div class="form-section row-flex">
+                <div class="col-half">
+                    <label for="dueDate">期日:</label>
+                    <input type="datetime-local" id="dueDate" name="dueDate" class="form-control" required>
+                </div>
+                <div class="col-half">
+                    <label for="remindStartDate">リマインド開始日:</label>
+                    <input type="datetime-local" id="remindStartDate" name="remindStartDate" class="form-control" required>
+                </div>
+                <div class="col-half">
+                    <label for="remindInterval">リマインド間隔:</label>
+                    <select id="remindInterval" name="remindInterval" class="form-control" required>
+                        <option value="1_minute">1分</option>
+                        <option value="daily" selected>毎日</option>
+                        <option value="every_three_days">3日</option>
+                        <option value="weekly">毎週</option>
+                    </select>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="dueDate">期日:</label>
-                <input type="datetime-local" id="dueDate" name="dueDate" class="form-control" required>
+            <div class="submit-button">
+                <button type="submit" class="btn btn-primary">登録</button>
             </div>
-            <div class="form-group">
-                <label for="remindStartDate">リマインド開始日:</label>
-                <input type="datetime-local" id="remindStartDate" name="remindStartDate" class="form-control" required>
-            </div>
-            <div class="form-group">
-                <label for="remindInterval">リマインド間隔:</label>
-                <select id="remindInterval" name="remindInterval" class="form-control" required>
-                    <option value="1_minute">1分</option>
-                    <option value="daily" selected>毎日</option>
-                    <option value="every_three_days">3日</option>
-                    <option value="weekly">毎週</option>
-                </select>
-            </div>
-            <button type="submit" class="btn btn-primary">登録</button>
         </form>
     </div>
 </body>
