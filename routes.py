@@ -1,47 +1,72 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash
-from models import db, Task, Comment, User
+# routes.py
+from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
+from extensions import db, mail  # extensions.py からインポート
+from models import Task, User, Comment
+from flask_mail import Message
+import logging
+import datetime
 
 main = Blueprint('main', __name__)
 
-@main.route('/task_list')
-def task_list():
-    tasks = Task.query.filter_by(is_completed=False).all()
-    return render_template('task_list.html', tasks=tasks)
+def get_completion_recipients(task):
+    recipients = [task.requester.email]
+    team_members = User.query.filter(
+        User.team_id == task.assignee.team_id,
+        User.id != task.assignee.id
+    ).all()
+    recipients += [member.email for member in team_members]
+    return recipients
 
-@main.route('/task_detail/<int:task_id>')
+@main.route('/task/<int:task_id>')
 def task_detail(task_id):
-    task = Task.query.get(task_id)
-    comments = Comment.query.filter_by(task_id=task_id).all()
+    task = Task.query.get_or_404(task_id)
+    comments = task.comments  # コメントの取得
     return render_template('task_detail.html', task=task, comments=comments)
+
+@main.route('/complete_task/<int:task_id>', methods=['POST'])
+def complete_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    if task.is_completed:
+        flash('タスクは既に完了しています。')
+        return redirect(url_for('main.task_detail', task_id=task_id))
+    
+    # タスクを完了に設定
+    task.is_completed = True
+    db.session.commit()
+    flash('タスクを完了にしました。')
+
+    # メール送信処理
+    try:
+        recipients = get_completion_recipients(task)
+        msg = Message(
+            subject="タスクが完了しました",
+            recipients=recipients,
+            body=f"タスク「{task.title}」が完了しました。\n\n依頼者: {task.requester.username}\n担当者: {task.assignee.username}\n完了日: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}"
+        )
+        mail.send(msg)
+        logging.info(f"Completion email sent to: {recipients}")
+    except Exception as e:
+        logging.error(f"Error sending completion email: {e}")
+        flash('タスク完了の通知メールの送信に失敗しました。')
+
+    return redirect(url_for('main.task_detail', task_id=task_id))
 
 @main.route('/add_comment/<int:task_id>', methods=['POST'])
 def add_comment(task_id):
     content = request.form.get('comment')
-    username = request.form.get('username')  # 名前を取得
-
-    user = User.query.filter_by(username=username).first()  # ユーザーを検索
-
-    # デバッグ用の print 文
-    print(f"Received comment: '{content}' from user: '{username}'")  # デバッグ用
-
-    if content and user:
-        new_comment = Comment(task_id=task_id, user_id=user.id, content=content)  # user_idを追加
-        db.session.add(new_comment)
-        db.session.commit()
-        print(f"Comment added successfully!")  # 成功メッセージ
-    else:
-        print("Failed to add comment: Content or user not found.")  # エラーメッセージ
+    username = request.form.get('username')
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        flash('ユーザーが見つかりません。')
+        return redirect(url_for('main.task_detail', task_id=task_id))
     
+    comment = Comment(task_id=task_id, user_id=user.id, content=content)
+    db.session.add(comment)
+    db.session.commit()
+    flash('コメントを追加しました。')
     return redirect(url_for('main.task_detail', task_id=task_id))
 
-@main.route('/complete_task/<int:task_id>', methods=['POST'])
-def complete_task(task_id):
-    task = Task.query.get(task_id)
-    if task:
-        task.is_completed = True
-        db.session.commit()
-        flash('タスクが完了しました。', 'success')
-    else:
-        flash('タスクが見つかりませんでした。', 'error')
-    
-    return redirect(url_for('main.task_list'))
+@main.route('/task_list')
+def task_list():
+    tasks = Task.query.all()
+    return render_template('task_list.html', tasks=tasks)

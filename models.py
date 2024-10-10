@@ -1,6 +1,6 @@
-from flask_sqlalchemy import SQLAlchemy
+# models.py
+from extensions import db
 
-db = SQLAlchemy()
 class Team(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
@@ -24,11 +24,14 @@ class Task(db.Model):
 
     requester = db.relationship('User', foreign_keys=[requester_id], backref='requested_tasks')
     assignee = db.relationship('User', foreign_keys=[assignee_id], backref='assigned_tasks')
+    
+    # コメントとのリレーションシップを追加
+    comments = db.relationship('Comment', backref='task', lazy=True)
 
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)  # 追加
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     content = db.Column(db.String(500), nullable=False)
 
-    user = db.relationship('User', backref='comments')  # ユーザーとのリレーションを追加
+    user = db.relationship('User', backref='user_comments')  # 名前を変更して競合を避ける
