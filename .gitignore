@@ -5,5 +5,5 @@ tasks_pull.db
 *.pyc
 __pycache__/
 venv/
-instance/tasks.db
+# instance/tasks.db
 instance/tasks_.db
