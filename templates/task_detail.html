@@ -5,31 +5,69 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>タスク詳細</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .row-flex {
+            display: flex;
+            justify-content: space-between; /* 要素間のスペースを均等に */
+            margin-bottom: 10px; /* 各行の間のスペースを狭く */
+        }
+        .col-half {
+            flex: 1; /* 各カラムを均等にする */
+            margin-right: 10px; /* 右側のマージン */
+        }
+        .col-half:last-child {
+            margin-right: 0; /* 最後のカラムにはマージンを付けない */
+        }
+        .compact-select {
+            max-width: 200px; /* プルダウンメニューの最大幅を指定 */
+            width: 100%; /* 幅を100%に設定 */
+        }
+    </style>
 </head>
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">タスク詳細</h1>
         <h2>{{ task.title }}</h2>
-        <p><strong>依頼者:</strong> {{ task.requester.username }}</p>
-        <p><strong>担当者:</strong> {{ task.assignee.username }}</p>
-        <p><strong>期日:</strong> {{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</p>
-        <p><strong>リマインド開始日:</strong> {{ task.remind_start_date.strftime('%Y-%m-%d %H:%M') }}</p>
-        <p><strong>リマインド間隔:</strong> {{ task.remind_interval }}</p>
-        
+
+        <div class="row-flex">
+            <div class="col-half">
+                <p><strong>担当者:</strong> {{ task.assignee.username }}</p>
+            </div>
+            <div class="col-half">
+                <p><strong>期日:</strong> {{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</p>
+            </div>
+        </div>
+
+        <div class="row-flex">
+            <div class="col-half">
+                <p><strong>リマインド開始日:</strong> {{ task.remind_start_date.strftime('%Y-%m-%d %H:%M') }}</p>
+            </div>
+            <div class="col-half">
+                <p><strong>リマインド間隔:</strong> {{ task.remind_interval }}</p>
+            </div>
+        </div>
+
         <h3>コメント</h3>
         <ul>
             {% for comment in comments %}
                 <li><strong>{{ comment.user.username }}:</strong> {{ comment.content }}</li>
             {% endfor %}
         </ul>
-        
-        <form action="{{ url_for('main.add_comment', task_id=task.id) }}" method="POST">
-            <input type="text" name="username" placeholder="あなたの名前" required>
-            <input type="text" name="comment" placeholder="コメントを入力する" required>
+
+        <form action="{{ url_for('main.add_comment', task_id=task.id) }}" method="POST" class="mb-3">
+            <div class="input-group mb-3">
+                <select name="username" required class="form-control compact-select">
+                    <option value="" disabled selected>あなたの名前を選択</option>
+                    <option value="yofukashi">yofukashi</option>
+                    <option value="autumn2024">autumn2024</option>
+                    <option value="charlie">charlie</option>
+                </select>
+            </div>
+            <input type="text" name="comment" placeholder="コメントを入力する" required class="form-control mb-3">
             <button type="submit" class="btn btn-secondary">コメントを追加</button>
         </form>
-        
-        <form action="{{ url_for('main.complete_task', task_id=task.id) }}" method="POST">
+
+        <form action="{{ url_for('main.complete_task', task_id=task.id) }}" method="POST" class="mb-3">
             <button type="submit" class="btn btn-success">タスクを完了にする</button>
         </form>
 
