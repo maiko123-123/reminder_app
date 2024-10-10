@@ -4,72 +4,51 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>タスク登録</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>タスク登録フォーム</h1>
-    <form id="taskForm" method="POST" action="/register_task">
-        <label for="taskContent">タスク内容:</label>
-        <textarea id="taskContent" name="taskContent" rows="4" required></textarea>
-
-        <label for="requester">依頼者:</label>
-        <select id="requester" name="requester_id" required>
-            {% for user in users %}
-                <option value="{{ user.id }}">{{ user.username }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="assignee">実行者:</label>
-        <select id="assignee" name="assignee_id" required>
-            {% for user in users %}
-                <option value="{{ user.id }}">{{ user.username }}</option>
-            {% endfor %}
-        </select>
-
-        <label for="dueDate">期日:</label>
-        <input type="datetime-local" id="dueDate" name="dueDate" required>
-
-        <label for="remindStartDate">リマインド開始日:</label>
-        <input type="datetime-local" id="remindStartDate" name="remindStartDate" required>
-
-        <label for="remindInterval">リマインド間隔:</label>
-        <select id="remindInterval" name="remindInterval" required>
-            <option value="1_minute">1分</option>
-            <option value="daily" selected>毎日</option>
-            <option value="every_three_days">3日</option>
-            <option value="weekly">毎週</option>
-        </select>
-
-        <button type="submit">登録</button>
-    </form>
-
-    <script>
-        document.getElementById('taskForm').onsubmit = async function(e) {
-            e.preventDefault();
-            const response = await fetch('/register_task', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams({
-                    taskContent: document.getElementById('taskContent').value,
-                    requester_id: document.getElementById('requester').value,
-                    assignee_id: document.getElementById('assignee').value,
-                    dueDate: document.getElementById('dueDate').value,
-                    remindStartDate: document.getElementById('remindStartDate').value,
-                    remindInterval: document.getElementById('remindInterval').value // 修正した部分
-                })
-            });
-            
-            const result = await response.json();
-            
-            if (response.ok) { // レスポンスが成功した場合
-                window.location.href = result.redirect_url; // リダイレクト
-            } else {
-                alert(result.error || 'タスクの登録に失敗しました。'); // エラーメッセージ表示
-            }
-            
-            this.reset();
-        };
-    </script>
+    <div class="container mt-5">
+        <h1 class="mb-4">タスク登録フォーム</h1>
+        <form id="taskForm" method="POST" action="{{ url_for('main.register_task') }}">
+            <div class="form-group">
+                <label for="taskContent">タスク内容:</label>
+                <textarea id="taskContent" name="taskContent" class="form-control" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="requester">依頼者:</label>
+                <select id="requester" name="requester_id" class="form-control" required>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="assignee">実行者:</label>
+                <select id="assignee" name="assignee_id" class="form-control" required>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="dueDate">期日:</label>
+                <input type="datetime-local" id="dueDate" name="dueDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="remindStartDate">リマインド開始日:</label>
+                <input type="datetime-local" id="remindStartDate" name="remindStartDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="remindInterval">リマインド間隔:</label>
+                <select id="remindInterval" name="remindInterval" class="form-control" required>
+                    <option value="1_minute">1分</option>
+                    <option value="daily" selected>毎日</option>
+                    <option value="every_three_days">3日</option>
+                    <option value="weekly">毎週</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">登録</button>
+        </form>
+    </div>
 </body>
 </html>

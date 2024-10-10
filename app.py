@@ -33,13 +33,14 @@ scheduler = BackgroundScheduler()
 def send_reminder_email(task):
     with app.app_context():
         try:
-            recipients = get_reminder_recipients(task)
-            msg = Message("Task Reminder", recipients=recipients)
-            msg.body = f"Reminder: Your task '{task.title}' is due on {task.due_date}."
+            recipients = get_remind(task)  # 仮の関数呼び出し
+            msg = Message(subject="タスクのリマインダー",
+                          recipients=recipients,
+                          body=f"タスク: {task.title} のリマインダーです。")
             mail.send(msg)
             logging.info(f"Email sent to: {recipients}")  # ログを追加
         except Exception as e:
-            logging.error(f"Error sending email: {e}")  # エラーの詳細をログに記録
+            logging.error(f"Error sending email: {e}")
 
 def get_reminder_recipients(task):
     recipients = [task.assignee.email]
