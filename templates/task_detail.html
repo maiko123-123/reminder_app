@@ -49,6 +49,9 @@
 
         <div class="row-flex">
             <div class="col-half">
+                <p><strong>完了日:</strong> {{ task.completed_at.strftime('%Y-%m-%d %H:%M') if task.completed_at else '未完了' }}</p>
+            </div>
+            <div class="col-half">
                 <p><strong>リマインド間隔:</strong> {{ task.remind_interval }}</p>
             </div>
         </div>
@@ -64,15 +67,15 @@
             <div class="input-group mb-3">
                 <select name="username" required class="form-control compact-select">
                     <option value="" disabled selected>あなたの名前を選択</option>
-                    <option value="yofukashi">yofukashi</option>
-                    <option value="autumn2024">autumn2024</option>
-                    <option value="charlie">charlie</option>
+                    {% for user in users %}
+                        <option value="{{ user.username }}">{{ user.username }}</option>
+                    {% endfor %}
                 </select>
             </div>
             <input type="text" name="comment" placeholder="コメントを入力する" required class="form-control mb-3">
             <button type="submit" class="btn btn-secondary">コメントを追加</button>
         </form>
-
+        
         <form action="{{ url_for('main.complete_task', task_id=task.id) }}" method="POST" class="mb-3">
             <button type="submit" class="btn btn-success">タスクを完了にする</button>
         </form>
