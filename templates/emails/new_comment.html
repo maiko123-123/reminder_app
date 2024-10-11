@@ -8,10 +8,9 @@
 <body>
     <p>こんにちは！</p>
     <p><strong>{{ commenter.username }}</strong> さんがタスク <strong>{{ task.title }}</strong> にコメントを追加しました。</p>
+    <p>タスクの期限は <strong>{{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</strong> です。</p>
     <p><strong>コメント内容:</strong></p>
     <blockquote>{{ comment.content }}</blockquote>
-    <p><a href="{{ task_url }}">タスク詳細を見る</a></p>
-    <p>ご確認ください。</p>
-    <p>よろしくお願いします！</p>
+    <p><a href="{{ task_url }}">こちら</a> から他の人のコメントも確認できます！</p>
 </body>
 </html>

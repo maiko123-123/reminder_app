@@ -9,7 +9,17 @@
 <body>
     <div class="container mt-5">
         <h1 class="mb-4">タスク一覧</h1>
-        <a href="{{ url_for('main.index') }}" class="btn btn-primary mb-3">タスクを追加</a>
+
+        <!-- フレックスボックスを使用してボタンとフィルタを配置 -->
+        <div class="d-flex justify-content-between mb-3">
+            <a href="{{ url_for('main.index') }}" class="btn btn-primary">タスクを追加</a>
+            <div>
+                <a href="{{ url_for('main.task_list', filter='all') }}" class="btn btn-link">すべて</a>
+                <a href="{{ url_for('main.task_list', filter='completed') }}" class="btn btn-link">完了</a>
+                <a href="{{ url_for('main.task_list', filter='incomplete') }}" class="btn btn-link">未完了</a>
+            </div>
+        </div>
+
         <table class="table">
             <thead>
                 <tr>
@@ -17,6 +27,7 @@
                     <th>依頼者</th>
                     <th>実行者</th>
                     <th>期日</th>
+                    <th>完了日</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -27,6 +38,13 @@
                     <td>{{ task.requester.username }}</td>
                     <td>{{ task.assignee.username }}</td>
                     <td>{{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                    <td>
+                        {% if task.completed_at %}
+                            {{ task.completed_at.strftime('%Y-%m-%d %H:%M') }}
+                        {% else %}
+                            未完了
+                        {% endif %}
+                    </td>
                     <td>
                         <form action="{{ url_for('main.complete_task', task_id=task.id) }}" method="POST" style="display:inline;">
                             <button type="submit" class="btn btn-success">完了</button>

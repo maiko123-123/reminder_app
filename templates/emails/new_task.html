@@ -7,7 +7,7 @@
 </head>
 <body>
     <p>こんにちは！</p>
-    <p>新しいタスク <strong>{{ task.title }}</strong> が作成され、 <strong> {{ task.assignee.username }}</strong> に割り当てられました！</p>
+    <p>新しいタスク <strong>{{ task.title }}</strong> が作成され、 <strong> {{ task.assignee.username }}</strong> さんに割り当てられました！</p>
     <p><strong>{{ task.requester.username }}</strong> さんからの依頼です。</p>
     <p><strong> {{ task.due_date.strftime('%Y-%m-%d %H:%M') }}</strong> までに完了してください。</p>
     <p><a href="{{ task_url }}">タスク詳細を見る</a></p>

@@ -21,7 +21,9 @@ class Task(db.Model):
     remind_start_date = db.Column(db.DateTime, nullable=False)
     remind_interval = db.Column(db.String(10), nullable=False)
     is_completed = db.Column(db.Boolean, default=False)
-
+    completed_at = db.Column(db.DateTime, nullable=True) 
+    last_remind_time = db.Column(db.DateTime, nullable=True)  # 追加されたフィールド
+    
     requester = db.relationship('User', foreign_keys=[requester_id], backref='requested_tasks')
     assignee = db.relationship('User', foreign_keys=[assignee_id], backref='assigned_tasks')
     
